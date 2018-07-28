@@ -31,14 +31,14 @@ var Juego = {
     new Obstaculo('imagenes/valla_horizontal.png', 130, 100, 30, 30, 1),
     new Obstaculo('imagenes/valla_horizontal.png', 160, 100, 30, 30, 1),
     // Autos
-    new Obstaculo('imagenes/auto_verde_abajo.png', 180, 230, 15, 30, 3),
-    new Obstaculo('imagenes/auto_verde_abajo.png', 860, 390, 15, 30, 3),
-    new Obstaculo('imagenes/auto_verde_derecha.png', 370, 470, 30, 15, 3),
+    new Obstaculo('imagenes/auto_verde_abajo.png', 180, 230, 15, 30, 2),
+    new Obstaculo('imagenes/auto_verde_abajo.png', 860, 390, 15, 30, 2),
+    new Obstaculo('imagenes/auto_verde_derecha.png', 370, 470, 30, 15, 2),
     //Baches
-    new Obstaculo('imagenes/bache.png', 180, 280, 30, 30, 2),
-    new Obstaculo('imagenes/bache.png', 300, 490, 30, 30, 2),
-    new Obstaculo('imagenes/bache.png', 510, 130, 30, 30, 2),
-    new Obstaculo('imagenes/bache.png', 810, 425, 30, 30, 2)
+    new Obstaculo('imagenes/bache.png', 180, 280, 30, 30, 1),
+    new Obstaculo('imagenes/bache.png', 300, 490, 30, 30, 1),
+    new Obstaculo('imagenes/bache.png', 510, 130, 30, 30, 1),
+    new Obstaculo('imagenes/bache.png', 810, 425, 30, 30, 1)
   ],
   /* Estos son los bordes con los que se puede chocar, por ejemplo, la vereda.
    Ya estan ubicados en sus lugares correspondientes. Ya aparecen en el mapa, ya
@@ -61,7 +61,19 @@ var Juego = {
   ],
   // Los enemigos se agregaran en este arreglo.
   enemigos: [
-
+    //conductores.
+    new ZombieConductor('imagenes/tren_vertical.png',644,0,30,90,4,{desdeX: 0, hastaX: 0, desdeY: -200, hastaY: 700},'v'),
+    new ZombieConductor('imagenes/tren_horizontal.png',-198,322,90,30,6,{desdeX: -200, hastaX: 1100, desdeY: 0, hastaY: 0},'h'),
+    new ZombieConductor('imagenes/tren_vertical.png',676,700,30,90,5,{desdeX: 0, hastaX: 0, desdeY: -200, hastaY: 700},'v'),
+    //caminantes
+    new ZombieCaminante('imagenes/zombie1.png',numeroRandom(961),numeroRandom(577),10,10,numeroRandom(3),{desdeX: -200, hastaX: 1100, desdeY: -200, hastaY: 700}),
+    new ZombieCaminante('imagenes/zombie1.png',numeroRandom(961),numeroRandom(577),10,10,numeroRandom(3),{desdeX: -200, hastaX: 1100, desdeY: -200, hastaY: 700}),
+    new ZombieCaminante('imagenes/zombie2.png',numeroRandom(961),numeroRandom(577),10,10,numeroRandom(3),{desdeX: -200, hastaX: 1100, desdeY: -200, hastaY: 700}),
+    new ZombieCaminante('imagenes/zombie2.png',numeroRandom(961),numeroRandom(577),10,10,numeroRandom(3),{desdeX: -200, hastaX: 1100, desdeY: -200, hastaY: 700}),
+    new ZombieCaminante('imagenes/zombie3.png',numeroRandom(961),numeroRandom(577),10,10,numeroRandom(3),{desdeX: -200, hastaX: 1100, desdeY: -200, hastaY: 700}),
+    new ZombieCaminante('imagenes/zombie3.png',numeroRandom(961),numeroRandom(577),10,10,numeroRandom(3),{desdeX: -200, hastaX: 1100, desdeY: -200, hastaY: 700}),
+    new ZombieCaminante('imagenes/zombie4.png',numeroRandom(961),numeroRandom(577),10,10,numeroRandom(3),{desdeX: -200, hastaX: 1100, desdeY: -200, hastaY: 700}),
+    new ZombieCaminante('imagenes/zombie4.png',numeroRandom(961),numeroRandom(577),10,10,numeroRandom(3),{desdeX: -200, hastaX: 1100, desdeY: -200, hastaY: 700})
   ]
 
 }
@@ -105,6 +117,7 @@ Juego.comenzar = function() {
   /* El bucle principal del juego se llamara continuamente para actualizar
   los movimientos y el pintado de la pantalla. Sera el encargado de calcular los
   ataques, colisiones, etc*/
+
   this.buclePrincipal();
 };
 
@@ -176,7 +189,7 @@ Juego.dibujar = function() {
 
   // Se recorren los enemigos pintandolos
   this.enemigos.forEach(function(enemigo) {
-    /* Completar */
+    Dibujante.dibujarEntidad(enemigo);
   });
 
   // El dibujante dibuja las vidas del jugador
@@ -197,7 +210,9 @@ Juego.dibujar = function() {
 un recorrido por los enemigos para dibujarlos en pantalla ahora habra que hacer
 una funcionalidad similar pero para que se muevan.*/
 Juego.moverEnemigos = function() {
-  /* COMPLETAR */
+  this.enemigos.forEach(function(enemigo) {
+    enemigo.mover();
+  });
 };
 
 /* Recorre los enemigos para ver cual esta colisionando con el jugador
@@ -207,18 +222,18 @@ se ven las colisiones con los obstaculos. En este caso sera con los zombies. */
 Juego.calcularAtaques = function() {
   this.enemigos.forEach(function(enemigo) {
     if (this.intersecan(enemigo, this.jugador, this.jugador.x, this.jugador.y)) {
-      /* Si el enemigo colisiona debe empezar su ataque
-      COMPLETAR */
+      /* Si el enemigo colisiona debe empezar su ataque*/
+      enemigo.comenzarAtaque(this.jugador);
     } else {
-      /* Sino, debe dejar de atacar
-      COMPLETAR */
+      /* Sino, debe dejar de atacar*/
+      enemigo.dejarDeAtacar();
     }
   }, this);
 };
 
 
 
-/* Aca se chequea si el jugador se peude mover a la posicion destino.
+/* Aca se chequea si el jugador se puede mover a la posicion destino.
  Es decir, que no haya obstaculos que se interpongan. De ser asi, no podra moverse */
 Juego.chequearColisiones = function(x, y) {
   var puedeMoverse = true
@@ -296,4 +311,8 @@ function dibujarLineaFinal(color1,color2,x,y,cant){
     Dibujante.dibujarRectangulo(color2,x, y, 12, 12);
     x+=12;
   }
+}
+//Funcion para calcular un numero random.
+function numeroRandom(max){
+  return Math.floor(Math.random() * (max - 1)) + 1;
 }
