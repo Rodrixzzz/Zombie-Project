@@ -29,6 +29,7 @@ var Jugador = {
     this.y += y;
   },
   cambiarImagen: function(posicion){
+    var self=this;
     switch(posicion)
     {
       case posiciones.abajo:
@@ -51,12 +52,12 @@ var Jugador = {
     function invertirDimensiones() {
       if(posicion === posiciones.derecha || posicion === posiciones.izquierda ){
         console.log(posicion);
-        Jugador.ancho = 30;
-        Jugador.alto = 15;
+        self.ancho = 30;
+        self.alto = 15;
       }
       else{
-        Jugador.ancho = 15;
-        Jugador.alto = 30;
+        self.ancho = 15;
+        self.alto = 30;
       }
     }
   },
